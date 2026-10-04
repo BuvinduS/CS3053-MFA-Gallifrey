@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – Gallifrey Demo{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<p>Welcome, {{ user.username }}</p>
+
+<form method="post" action="/logout">
+  <button type="submit">Log out</button>
+</form>
+{% endblock %}
