@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.db import init_db
-from app.routes import login, protected
+from app.routes import login, protected, auth
 
 
 @asynccontextmanager
@@ -18,6 +18,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Gallifrey RP Demo", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=Path(__file__).parent /
           "static"), name="static")
+app.include_router(auth.router)
 app.include_router(login.router)
 app.include_router(protected.router)
 
