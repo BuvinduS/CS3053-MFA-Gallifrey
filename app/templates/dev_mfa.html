@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Mock auth service (dev){% endblock %}
+{% block content %}
+<h1>Mock authentication service</h1>
+<p>Development only. This stands in for the phone and the real authentication service.</p>
+<p><a href="/dev/mfa">Refresh list</a></p>
+
+{% if requests %}
+<table>
+  <caption>MFA requests, newest first</caption>
+  <thead>
+    <tr>
+      <th scope="col">Transaction</th>
+      <th scope="col">Account</th>
+      <th scope="col">Status</th>
+      <th scope="col">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in requests %}
+    <tr>
+      <td>{{ r.tx_id }}</td>
+      <td>{{ r.account_id }}</td>
+      <td>{{ r.status }}</td>
+      <td>
+        {% if r.status == "PENDING" %}
+        <form method="post" action="/dev/mfa/{{ r.tx_id }}/approve" class="inline">
+          <button type="submit" aria-label="Approve request {{ r.tx_id }}">Approve</button>
+        </form>
+        <form method="post" action="/dev/mfa/{{ r.tx_id }}/deny" class="inline">
+          <button type="submit" aria-label="Deny request {{ r.tx_id }}">Deny</button>
+        </form>
+        {% else %}
+        None
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No requests yet. Log in on the website first.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Waiting for approval – Gallifrey Demo{% endblock %}
+{% block content %}
+<h1>Second step required</h1>
+
+{# Only changes when the status meaningfully changes, so screen readers
+   are not told about every poll. #}
+<p id="status-message" role="status" aria-live="polite">Waiting for approval on your phone...</p>
+
+<noscript>
+  <p>This page needs JavaScript to update automatically. Reload the page to check again.</p>
+</noscript>
+
+<p><a href="/login">Cancel and return to login</a></p>
+
+<script src="/static/pending.js" defer></script>
+{% endblock %}

@@ -1,0 +1,13 @@
+body { font-family: system-ui, sans-serif; line-height: 1.5; margin: 0; }
+main { max-width: 32rem; margin: 2rem auto; padding: 0 1rem; }
+.field { margin-bottom: 1rem; }
+label { display: block; font-weight: 600; margin-bottom: 0.25rem; }
+input { width: 100%; padding: 0.5rem; font-size: 1rem; box-sizing: border-box; }
+button { padding: 0.6rem 1.2rem; font-size: 1rem; cursor: pointer; }
+.error { border-left: 4px solid #b00020; background: #fdecea; padding: 0.5rem 0.75rem; }
+:focus-visible { outline: 3px solid #0b5fff; outline-offset: 2px; }
+.skip-link { position: absolute; left: -999px; }
+.skip-link:focus { left: 0.5rem; top: 0.5rem; background: #fff; padding: 0.5rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #888; padding: 0.4rem 0.6rem; text-align: left; }
+form.inline { display: inline; }
