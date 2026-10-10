@@ -5,9 +5,11 @@ from datetime import timedelta
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.config import SESSION_TTL_MINUTES
 from app.db import utcnow
 from app.models import User, WebSession
+
+from fastapi import Response
+from app.config import COOKIE_SECURE, SESSION_COOKIE_NAME, SESSION_TTL_MINUTES
 
 
 def _hash(token: str) -> str:
@@ -46,3 +48,11 @@ def delete_session(db: Session, token: str | None) -> None:
     if ws:
         db.delete(ws)
         db.commit()
+
+
+def set_session_cookie(response: Response, token: str) -> None:
+    response.set_cookie(
+        SESSION_COOKIE_NAME, token,
+        max_age=SESSION_TTL_MINUTES * 60,
+        httponly=True, secure=COOKIE_SECURE, samesite="lax",
+    )
