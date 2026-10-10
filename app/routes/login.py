@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 
 from app.config import COOKIE_SECURE, PENDING_COOKIE_NAME, PENDING_LOGIN_TTL_SECONDS
 from app.db import get_db
+from app.dependencies import get_auth_client
 from app.services import pending_login_service, user_service
+from app.services.auth_service_client import AuthServiceClient, AuthServiceError
 from app.templating import templates
 
 router = APIRouter()
@@ -21,24 +23,31 @@ def login_submit(
     username: str = Form(...),
     password: str = Form(...),
     db: Session = Depends(get_db),
+    auth_client: AuthServiceClient = Depends(get_auth_client),
 ):
     user = user_service.authenticate(db, username, password)
     if user is None:
-        # Same message for unknown user and wrong password.
         return templates.TemplateResponse(
             request, "login.html",
             {"error": "Incorrect username or password."}, status_code=401,
         )
 
-    # SECURITY: a valid password is only the first factor. We do NOT create a
-    # WebSession here. We record a PendingLogin; a session is only created after
-    # the second factor is verified and bound to this PendingLogin (Stage 4).
-    token = pending_login_service.create_pending_login(db, user)
+    # SECURITY: a valid password is only the first factor. No WebSession here.
+    try:
+        token = pending_login_service.create_pending_login(
+            db, user, auth_client)
+    except AuthServiceError:
+        return templates.TemplateResponse(
+            request, "login.html",
+            {"error": "The second-step service is unavailable. Please try again shortly."},
+            status_code=503,
+        )
+
     response = RedirectResponse("/auth/pending", status_code=303)
     response.set_cookie(
         PENDING_COOKIE_NAME, token,
         max_age=PENDING_LOGIN_TTL_SECONDS,
-        path="/auth",  # only sent to /auth/* routes
+        path="/auth",
         httponly=True, secure=COOKIE_SECURE, samesite="lax",
     )
     return response

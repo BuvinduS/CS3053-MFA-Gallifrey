@@ -8,3 +8,6 @@ button { padding: 0.6rem 1.2rem; font-size: 1rem; cursor: pointer; }
 :focus-visible { outline: 3px solid #0b5fff; outline-offset: 2px; }
 .skip-link { position: absolute; left: -999px; }
 .skip-link:focus { left: 0.5rem; top: 0.5rem; background: #fff; padding: 0.5rem; }
+table { border-collapse: collapse; width: 100%; }
+th, td { border: 1px solid #888; padding: 0.4rem 0.6rem; text-align: left; }
+form.inline { display: inline; }

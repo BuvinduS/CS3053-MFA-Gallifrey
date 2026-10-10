@@ -7,6 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.db import init_db
 from app.routes import login, protected, auth
+from app.config import DEV_MODE
 
 
 @asynccontextmanager
@@ -21,6 +22,9 @@ app.mount("/static", StaticFiles(directory=Path(__file__).parent /
 app.include_router(auth.router)
 app.include_router(login.router)
 app.include_router(protected.router)
+if DEV_MODE:
+    from app.routes import dev
+    app.include_router(dev.router)
 
 
 @app.get("/")
