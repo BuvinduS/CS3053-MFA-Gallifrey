@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.config import COOKIE_SECURE, SESSION_COOKIE_NAME, SESSION_TTL_MINUTES
+from app.config import COOKIE_SECURE, PENDING_COOKIE_NAME, PENDING_LOGIN_TTL_SECONDS
 from app.db import get_db
-from app.services import session_service, user_service
+from app.services import pending_login_service, user_service
 from app.templating import templates
 
 router = APIRouter()
@@ -30,13 +30,15 @@ def login_submit(
             {"error": "Incorrect username or password."}, status_code=401,
         )
 
-    # TEMPORARY (Stage 1 scaffolding): password alone creates a session.
-    # Stage 2 replaces this with a PendingLogin so password alone is never enough.
-    token = session_service.create_session(db, user)
-    response = RedirectResponse("/dashboard", status_code=303)
+    # SECURITY: a valid password is only the first factor. We do NOT create a
+    # WebSession here. We record a PendingLogin; a session is only created after
+    # the second factor is verified and bound to this PendingLogin (Stage 4).
+    token = pending_login_service.create_pending_login(db, user)
+    response = RedirectResponse("/auth/pending", status_code=303)
     response.set_cookie(
-        SESSION_COOKIE_NAME, token,
-        max_age=SESSION_TTL_MINUTES * 60,
+        PENDING_COOKIE_NAME, token,
+        max_age=PENDING_LOGIN_TTL_SECONDS,
+        path="/auth",  # only sent to /auth/* routes
         httponly=True, secure=COOKIE_SECURE, samesite="lax",
     )
     return response
