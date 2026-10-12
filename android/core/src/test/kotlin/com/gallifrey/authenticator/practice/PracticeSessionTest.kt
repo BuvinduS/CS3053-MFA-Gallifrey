@@ -144,6 +144,16 @@ class PracticeSessionTest {
     }
 
     @Test
+    fun `corrections are counted per round`() {
+        session.addDot(); session.removeLast()
+        assertEquals(1, session.stats().corrections)
+        session.restart()
+        assertEquals(0, session.stats().corrections)
+        session.addDash(); session.removeLast()
+        assertEquals(1, session.stats().corrections)
+    }
+
+    @Test
     fun `stats have no entry time when never matched`() {
         enterWrong(); session.submit()
         assertNull(session.stats().entryTimeMs)

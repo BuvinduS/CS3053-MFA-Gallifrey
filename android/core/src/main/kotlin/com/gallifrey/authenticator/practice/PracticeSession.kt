@@ -53,6 +53,8 @@ class PracticeSession(
     val input = PatternInput(classifier = classifier, mode = inputMode)
 
     private var submissions = 0
+    // PatternInput keeps a running total; stats count corrections per round.
+    private var correctionsAtStart = 0
     private var firstElementAtMs: Long? = null
     private var matchedAfterMs: Long? = null
 
@@ -71,6 +73,7 @@ class PracticeSession(
         guard = newGuard()
         input.reset()
         submissions = 0
+        correctionsAtStart = input.corrections
         firstElementAtMs = null
         matchedAfterMs = null
     }
@@ -134,7 +137,7 @@ class PracticeSession(
         inputMode = input.mode,
         submissions = submissions,
         failures = guard.failureCount,
-        corrections = input.corrections,
+        corrections = input.corrections - correctionsAtStart,
         entryTimeMs = matchedAfterMs,
         outcome = state,
     )
