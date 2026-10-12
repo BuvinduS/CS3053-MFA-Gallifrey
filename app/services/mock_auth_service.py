@@ -34,10 +34,24 @@ class MockAuthServiceClient(AuthServiceClient):
     def __init__(self) -> None:
         self._requests: dict[str, _Request] = {}
         self._results: dict[str, str] = {}  # result handle -> tx_id
+        self._idempotency: dict[str, tuple[str, str, str]] = {}
 
     # ---- contract methods -------------------------------------------------
 
-    def create_request(self, account_id: str, login_binding: str) -> str:
+    def create_request(
+        self,
+        account_id: str,
+        login_binding: str,
+        idempotency_key: str | None = None,
+    ) -> str:
+        if idempotency_key is not None:
+            previous = self._idempotency.get(idempotency_key)
+            if previous is not None:
+                previous_account, previous_binding, previous_tx_id = previous
+                if (previous_account, previous_binding) != (account_id, login_binding):
+                    raise AuthServiceError("Idempotency key reused")
+                return previous_tx_id
+
         tx_id = "tx_" + secrets.token_hex(4)
         self._requests[tx_id] = _Request(
             tx_id=tx_id,
@@ -45,6 +59,12 @@ class MockAuthServiceClient(AuthServiceClient):
             login_binding=login_binding,
             expires_at=utcnow() + timedelta(seconds=PENDING_LOGIN_TTL_SECONDS),
         )
+        if idempotency_key is not None:
+            self._idempotency[idempotency_key] = (
+                account_id,
+                login_binding,
+                tx_id,
+            )
         return tx_id
 
     def get_status(self, tx_id: str) -> AuthStatus:
@@ -56,13 +76,15 @@ class MockAuthServiceClient(AuthServiceClient):
             return req.result_handle
         return None
 
-    def redeem(self, result_handle: str) -> RedeemedResult:
+    def redeem(self, result_handle: str, login_binding: str) -> RedeemedResult:
         tx_id = self._results.get(result_handle)
         if tx_id is None:
             raise ResultRedemptionError("Unknown result")
         req = self._requests[tx_id]
         if req.redeemed:
             raise ResultRedemptionError("Result already redeemed")
+        if not secrets.compare_digest(req.login_binding, login_binding):
+            raise ResultRedemptionError("Login binding mismatch")
         req.redeemed = True  # one-time: consumed on first successful redeem
         return RedeemedResult(req.account_id, req.tx_id, req.login_binding)
 

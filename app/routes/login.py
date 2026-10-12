@@ -6,7 +6,11 @@ from app.config import COOKIE_SECURE, PENDING_COOKIE_NAME, PENDING_LOGIN_TTL_SEC
 from app.db import get_db
 from app.dependencies import get_auth_client
 from app.services import pending_login_service, user_service
-from app.services.auth_service_client import AuthServiceClient, AuthServiceError
+from app.services.auth_service_client import (
+    AuthServiceClient,
+    AuthServiceError,
+    AuthServiceRateLimited,
+)
 from app.templating import templates
 
 router = APIRouter()
@@ -36,6 +40,15 @@ def login_submit(
     try:
         token = pending_login_service.create_pending_login(
             db, user, auth_client)
+    except AuthServiceRateLimited as exc:
+        response = templates.TemplateResponse(
+            request,
+            "login.html",
+            {"error": "Too many sign-in attempts. Please wait and try again."},
+            status_code=429,
+        )
+        response.headers["Retry-After"] = str(exc.retry_after_seconds)
+        return response
     except AuthServiceError:
         return templates.TemplateResponse(
             request, "login.html",

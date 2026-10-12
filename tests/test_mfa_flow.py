@@ -6,7 +6,11 @@ from sqlalchemy import select
 
 from app.db import utcnow
 from app.models import PendingLogin, WebSession
-from app.services.auth_service_client import AuthServiceUnavailable, ResultRedemptionError
+from app.services.auth_service_client import (
+    AuthServiceRateLimited,
+    AuthServiceUnavailable,
+    ResultRedemptionError,
+)
 from app.services.mock_auth_service import MockAuthServiceClient
 
 
@@ -17,13 +21,20 @@ class TamperingMock(MockAuthServiceClient):
         super().__init__()
         self._overrides = overrides
 
-    def redeem(self, result_handle):
-        return dataclasses.replace(super().redeem(result_handle), **self._overrides)
+    def redeem(self, result_handle, login_binding):
+        return dataclasses.replace(
+            super().redeem(result_handle, login_binding), **self._overrides
+        )
 
 
 class UnavailableMock(MockAuthServiceClient):
-    def create_request(self, account_id, login_binding):
+    def create_request(self, account_id, login_binding, idempotency_key=None):
         raise AuthServiceUnavailable("down")
+
+
+class RateLimitedMock(MockAuthServiceClient):
+    def create_request(self, account_id, login_binding, idempotency_key=None):
+        raise AuthServiceRateLimited(23)
 
 
 def _tx(mock):
@@ -142,9 +153,9 @@ def test_result_can_only_be_redeemed_once(mock_auth):
     mock_auth.approve(tx)
     handle = mock_auth.get_result(tx)
 
-    assert mock_auth.redeem(handle).tx_id == tx  # first redemption succeeds
+    assert mock_auth.redeem(handle, "binding").tx_id == tx  # first redemption succeeds
     with pytest.raises(ResultRedemptionError):   # second fails
-        mock_auth.redeem(handle)
+        mock_auth.redeem(handle, "binding")
     assert mock_auth.get_result(tx) is None
 
 
@@ -173,6 +184,17 @@ def test_login_fails_safely_when_auth_service_is_down(make_client, login, db_ses
     assert client.cookies.get("gallifrey_pending") is None
     with db_session_factory() as db:
         assert db.scalars(select(PendingLogin)).all() == []
+
+
+def test_login_surfaces_auth_service_rate_limit(make_client, login):
+    client = make_client(RateLimitedMock())
+
+    response = login(client)
+
+    assert response.status_code == 429
+    assert response.headers["retry-after"] == "23"
+    assert "Too many sign-in attempts" in response.text
+    assert client.cookies.get("gallifrey_pending") is None
 
 
 def test_browser_never_receives_internal_state(client, mock_auth, login, db_session_factory):
