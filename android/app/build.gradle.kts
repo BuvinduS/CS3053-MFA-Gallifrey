@@ -47,6 +47,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.0")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.datastore:datastore-preferences:1.1.7")
 
     implementation(platform("androidx.compose:compose-bom:2025.05.00"))
     implementation("androidx.compose.ui:ui")
