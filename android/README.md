@@ -101,9 +101,9 @@ Requirements: JDK 17+ and, for the app, Android SDK Platform 35 (Android Studio
 installs it). Open the `android/` folder in Android Studio.
 
 ```bash
-./gradlew :core:test                    # 109 JVM tests, no SDK needed
-./gradlew :app:testDebugUnitTest        # 5 JVM tests for settings storage
-./gradlew :app:connectedDebugAndroidTest  # 7 Keystore tests on a connected phone
+./gradlew :core:test                    # JVM tests, no SDK needed
+./gradlew :app:testDebugUnitTest        # JVM tests for settings storage
+./gradlew :app:connectedDebugAndroidTest  # Keystore tests on a connected phone
 ./gradlew :app:installDebug             # install on the phone
 ```
 

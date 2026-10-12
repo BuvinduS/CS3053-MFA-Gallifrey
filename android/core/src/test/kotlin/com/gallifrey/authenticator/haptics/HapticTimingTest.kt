@@ -23,12 +23,27 @@ class HapticTimingTest {
     }
 
     @Test
-    fun `playback unit keeps proportions and leaves hold threshold alone`() {
-        val t = HapticTiming.DEFAULT.withPlaybackUnit(300)
+    fun `playback unit scales pulses and leaves gap, delay and hold threshold alone`() {
+        val t = HapticTiming.DEFAULT.withGap(350).withStartDelay(1_500).withPlaybackUnit(300)
         assertEquals(300, t.dotMs)
         assertEquals(900, t.dashMs)
-        assertEquals(300, t.gapMs)
+        assertEquals(350, t.gapMs)
+        assertEquals(1_500, t.startDelayMs)
         assertEquals(400, t.holdThresholdMs)
+    }
+
+    @Test
+    fun `gap and start delay are adjusted independently`() {
+        val t = HapticTiming.DEFAULT.withGap(500).withStartDelay(0)
+        assertEquals(500, t.gapMs)
+        assertEquals(0, t.startDelayMs)
+        assertEquals(200, t.dotMs)
+    }
+
+    @Test
+    fun `gap shorter than 100 ms is rejected`() {
+        assertFailsWith<IllegalArgumentException> { HapticTiming.DEFAULT.withGap(99) }
+        assertEquals(100, HapticTiming.DEFAULT.withGap(100).gapMs)
     }
 
     @Test

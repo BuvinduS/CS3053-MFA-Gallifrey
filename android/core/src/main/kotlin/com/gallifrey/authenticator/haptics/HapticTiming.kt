@@ -21,7 +21,8 @@ data class HapticTiming(
         require(dashMs >= dotMs * MIN_DASH_TO_DOT_RATIO) {
             "dashMs must be at least $MIN_DASH_TO_DOT_RATIO x dotMs"
         }
-        require(gapMs in MIN_PULSE_MS..MAX_PULSE_MS) { "gapMs out of range" }
+        // Long enough that two pulses are never felt as one.
+        require(gapMs in MIN_GAP_MS..MAX_PULSE_MS) { "gapMs out of range" }
         require(startDelayMs in 0..MAX_START_DELAY_MS) { "startDelayMs out of range" }
         require(holdThresholdMs in MIN_HOLD_THRESHOLD_MS..MAX_HOLD_THRESHOLD_MS) {
             "holdThresholdMs out of range"
@@ -34,12 +35,18 @@ data class HapticTiming(
     }
 
     /**
-     * Rescales playback from a single user-chosen unit while keeping the default
-     * proportions (DASH = 3 units, gap = 1 unit). The hold threshold is left
-     * unchanged because gesture input is calibrated separately.
+     * Rescales the pulses from a single user-chosen unit (DOT = 1 unit,
+     * DASH = 3 units). The gap, start delay and hold threshold are adjusted
+     * separately, so changing speed never overrides them.
      */
     fun withPlaybackUnit(unitMs: Long): HapticTiming =
-        copy(dotMs = unitMs, dashMs = unitMs * 3, gapMs = unitMs)
+        copy(dotMs = unitMs, dashMs = unitMs * 3)
+
+    /** Silence between elements. */
+    fun withGap(gapMs: Long): HapticTiming = copy(gapMs = gapMs)
+
+    /** Preparation time before the first pulse. */
+    fun withStartDelay(startDelayMs: Long): HapticTiming = copy(startDelayMs = startDelayMs)
 
     companion object {
         const val DEFAULT_DOT_MS = 200L
@@ -49,6 +56,7 @@ data class HapticTiming(
         const val DEFAULT_HOLD_THRESHOLD_MS = 400L
 
         const val MIN_PULSE_MS = 50L
+        const val MIN_GAP_MS = 100L
         const val MAX_PULSE_MS = 2_000L
         const val MAX_START_DELAY_MS = 5_000L
         const val MIN_HOLD_THRESHOLD_MS = 100L

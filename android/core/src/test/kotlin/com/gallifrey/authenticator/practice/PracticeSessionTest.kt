@@ -77,6 +77,17 @@ class PracticeSessionTest {
     }
 
     @Test
+    fun `remaining time counts down and restarts with a new round`() {
+        assertEquals(120_000, session.remainingMs())
+        now += 90_000
+        assertEquals(30_000, session.remainingMs())
+        now += 60_000
+        assertEquals(0, session.remainingMs())
+        session.restart()
+        assertEquals(120_000, session.remainingMs())
+    }
+
+    @Test
     fun `reset clears entry but not attempts`() {
         enterWrong()
         session.submit()

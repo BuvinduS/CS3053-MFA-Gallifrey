@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gallifrey.authenticator.haptics.HapticEngine
 import com.gallifrey.authenticator.practice.PracticeScreen
@@ -45,14 +46,14 @@ fun AuthenticatorApp(
 
     Column(modifier = Modifier.fillMaxSize().safeDrawingPadding()) {
         PrimaryTabRow(selectedTabIndex = tab) {
-            listOf("Practice", "Calibration").forEachIndexed { index, title ->
+            listOf(R.string.tab_practice, R.string.tab_calibration).forEachIndexed { index, title ->
                 Tab(
                     selected = tab == index,
                     onClick = {
                         haptics.cancel()
                         tab = index
                     },
-                    text = { Text(title) },
+                    text = { Text(stringResource(title)) },
                     modifier = Modifier.heightIn(min = 56.dp),
                 )
             }

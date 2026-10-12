@@ -48,6 +48,7 @@ class PracticeSession(
     private val clock: () -> Long = System::currentTimeMillis,
 ) {
     private var pattern: HapticPattern = generator.generate()
+    private var expiresAtMs: Long = 0
     private var guard: TransactionGuard = newGuard()
 
     val input = PatternInput(classifier = classifier, mode = inputMode)
@@ -63,6 +64,9 @@ class PracticeSession(
     val canEnter: Boolean get() = state == LocalState.AWAITING_PATTERN
     val canApprove: Boolean get() = guard.canApprove()
     val canDeny: Boolean get() = guard.canDeny()
+
+    /** Milliseconds until this round expires; 0 once expired. */
+    fun remainingMs(): Long = (expiresAtMs - clock()).coerceAtLeast(0)
 
     /** The pattern to hand to the HapticEngine. Never display, speak or log it. */
     fun patternForPlayback(): HapticPattern = pattern
@@ -151,12 +155,15 @@ class PracticeSession(
         return added
     }
 
-    private fun newGuard() = TransactionGuard(
-        transactionId = "practice-" + UUID.randomUUID(),
-        expected = pattern,
-        expiresAtMs = clock() + expiryMs,
-        clock = clock,
-    )
+    private fun newGuard(): TransactionGuard {
+        expiresAtMs = clock() + expiryMs
+        return TransactionGuard(
+            transactionId = "practice-" + UUID.randomUUID(),
+            expected = pattern,
+            expiresAtMs = expiresAtMs,
+            clock = clock,
+        )
+    }
 
     companion object {
         /** Same as a real request (design D01). */

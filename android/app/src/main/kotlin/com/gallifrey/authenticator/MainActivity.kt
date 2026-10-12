@@ -53,8 +53,8 @@ class MainActivity : FragmentActivity() {
         if (deviceAuth.availability() != DeviceAuthAvailability.READY) return false
         if (!practiceSigner.hasKey()) practiceSigner.generateKey()
         val signature = deviceAuth.withUserVerification(
-            title = "Approve practice request",
-            subtitle = "Verify it's you to sign the practice approval",
+            title = getString(R.string.verify_practice_title),
+            subtitle = getString(R.string.verify_practice_subtitle),
         ) { practiceSigner.sign(PRACTICE_MESSAGE) }
         return signature != null
     }

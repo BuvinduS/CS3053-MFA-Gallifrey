@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
@@ -28,6 +29,7 @@ import androidx.compose.ui.semantics.disabled
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.gallifrey.authenticator.R
 import com.gallifrey.authenticator.haptics.PatternElement
 
 /**
@@ -54,6 +56,9 @@ fun HoldGestureArea(
     val currentClassifier by rememberUpdatedState(classifier)
     val currentOnElement by rememberUpdatedState(onElement)
     val currentOnHoldMeasured by rememberUpdatedState(onHoldMeasured)
+    val description = stringResource(R.string.hold_area_description)
+    val addDot = stringResource(R.string.action_add_dot)
+    val addDash = stringResource(R.string.action_add_dash)
     var pressed by remember { mutableStateOf(false) }
 
     val colors = MaterialTheme.colorScheme
@@ -72,11 +77,11 @@ fun HoldGestureArea(
             .background(background, RoundedCornerShape(16.dp))
             .border(2.dp, colors.outline, RoundedCornerShape(16.dp))
             .semantics(mergeDescendants = true) {
-                contentDescription = "Hold area. Tap for dot, hold for dash."
+                contentDescription = description
                 if (enabled) {
                     customActions = listOf(
-                        CustomAccessibilityAction("Add dot") { currentOnElement(PatternElement.DOT); true },
-                        CustomAccessibilityAction("Add dash") { currentOnElement(PatternElement.DASH); true },
+                        CustomAccessibilityAction(addDot) { currentOnElement(PatternElement.DOT); true },
+                        CustomAccessibilityAction(addDash) { currentOnElement(PatternElement.DASH); true },
                     )
                 } else {
                     disabled()
@@ -100,7 +105,7 @@ fun HoldGestureArea(
             },
     ) {
         Text(
-            text = if (pressed) "Holding…" else "Tap for Dot · Hold for Dash",
+            text = stringResource(if (pressed) R.string.hold_area_holding else R.string.hold_area_label),
             color = content,
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
