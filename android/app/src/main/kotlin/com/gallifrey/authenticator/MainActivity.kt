@@ -31,6 +31,10 @@ import com.gallifrey.authenticator.device.KeystoreDeviceSigner
 import com.gallifrey.authenticator.haptics.HapticEngine
 import com.gallifrey.authenticator.haptics.HapticPattern
 import com.gallifrey.authenticator.haptics.PatternElement
+import com.gallifrey.authenticator.input.GestureClassifier
+import com.gallifrey.authenticator.input.HoldGestureArea
+import com.gallifrey.authenticator.input.InputMode
+import com.gallifrey.authenticator.input.PatternInput
 import kotlinx.coroutines.launch
 
 // FragmentActivity (a ComponentActivity) is required by BiometricPrompt.
@@ -41,6 +45,8 @@ class MainActivity : FragmentActivity() {
     private lateinit var practiceSigner: KeystoreDeviceSigner
 
     private var status by mutableStateOf("")
+    private val gestureClassifier = GestureClassifier()
+    private val gestureInput = PatternInput(classifier = gestureClassifier, mode = InputMode.GESTURE)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +80,18 @@ class MainActivity : FragmentActivity() {
                         ) {
                             Text("Practice approval")
                         }
+                        HoldGestureArea(
+                            classifier = gestureClassifier,
+                            onElement = {
+                                // Temporary check only: a full entry restarts on the next element.
+                                if (gestureInput.isComplete) gestureInput.reset()
+                                when (it) {
+                                    PatternElement.DOT -> gestureInput.addDot()
+                                    PatternElement.DASH -> gestureInput.addDash()
+                                }
+                                status = "Entered ${gestureInput.count} of 4 (practice: last was $it)"
+                            },
+                        )
                         Text(
                             text = status,
                             modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
