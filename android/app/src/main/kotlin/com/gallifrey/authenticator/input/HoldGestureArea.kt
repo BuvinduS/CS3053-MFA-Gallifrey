@@ -48,9 +48,12 @@ fun HoldGestureArea(
     onElement: (PatternElement) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    /** Optional: the measured hold in milliseconds, for calibration feedback. */
+    onHoldMeasured: ((Long) -> Unit)? = null,
 ) {
     val currentClassifier by rememberUpdatedState(classifier)
     val currentOnElement by rememberUpdatedState(onElement)
+    val currentOnHoldMeasured by rememberUpdatedState(onHoldMeasured)
     var pressed by remember { mutableStateOf(false) }
 
     val colors = MaterialTheme.colorScheme
@@ -89,6 +92,7 @@ fun HoldGestureArea(
                     pressed = false
                     if (up != null) {
                         up.consume()
+                        currentOnHoldMeasured?.invoke(up.uptimeMillis - down.uptimeMillis)
                         currentClassifier.classify(down.uptimeMillis, up.uptimeMillis)
                             ?.let(currentOnElement)
                     }
