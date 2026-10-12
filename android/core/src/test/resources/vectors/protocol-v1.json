@@ -1,0 +1,27 @@
+{
+  "_comment": "Shared test vectors for GALLIFREY-MFA-DECISION-V1 and GALLIFREY-MFA-ENROLL-V1. Rebuild each message from its fields (LF-joined ASCII, no trailing newline), compare with *_message, then verify *_signature (base64url DER ECDSA P-256/SHA-256) with public_key_spki (base64url DER SubjectPublicKeyInfo). The key pair was generated once for these vectors only.",
+
+  "public_key_spki": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAELf1DSFdFxYooouJPWW3_wfP3ofOsZGsvmmZiY4bKIK_TfcVEne1fGyErmfV6UJh8FdloG2CNYQ1wgwcNKl-gFw",
+  "public_key_fingerprint": "P53o-GF4yh-3iSdScBOi_nJOU4qOWyA5GZWh5bzyP3I",
+
+  "decision_transaction_id": "3f2b8c1e-4d5a-4e6f-9a7b-8c9d0e1f2a3b",
+  "decision_challenge_nonce": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+  "decision_account_id": "11111111-2222-4333-8444-555555555555",
+  "decision_device_id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+  "decision_rp_id": "gallifrey-demo",
+  "decision_login_binding": "q8Jm3vX1pYt6Ns0rLw9eZbHk2uFc7dGa4iTo5QxR1yE",
+  "decision_expires_at": "1790000120",
+
+  "approve_message": "GALLIFREY-MFA-DECISION-V1\n3f2b8c1e-4d5a-4e6f-9a7b-8c9d0e1f2a3b\nAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8\n11111111-2222-4333-8444-555555555555\naaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\ngallifrey-demo\nq8Jm3vX1pYt6Ns0rLw9eZbHk2uFc7dGa4iTo5QxR1yE\nAPPROVE\n1790000120",
+  "approve_signature": "MEUCIEIuTlyOd-8rIVCK4yXsbOyABJUvM8m5-dUvizAvvrxFAiEAm76h5OmEtut1NOyiYzPUY_fyxk0haBz-kGm_viCq51w",
+
+  "deny_message": "GALLIFREY-MFA-DECISION-V1\n3f2b8c1e-4d5a-4e6f-9a7b-8c9d0e1f2a3b\nAAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8\n11111111-2222-4333-8444-555555555555\naaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\ngallifrey-demo\nq8Jm3vX1pYt6Ns0rLw9eZbHk2uFc7dGa4iTo5QxR1yE\nDENY\n1790000120",
+  "deny_signature": "MEUCICEv-hVH_26019cqA0srvx1aO69aBLpqLXyGd7xvFdxtAiEAojFotSyVe72PV-7oEnecPOBX8RP1CZ1h2rpf7SBV8DY",
+
+  "enroll_enrollment_id": "0e9d8c7b-6a5f-4e3d-8c2b-1a0f9e8d7c6b",
+  "enroll_nonce": "__79_Pv6-fj39vX08_Lx8O_u7ezr6uno5-bl5OPi4eA",
+  "enroll_account_ref": "acct-42",
+  "enroll_device_id": "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee",
+  "enroll_message": "GALLIFREY-MFA-ENROLL-V1\n0e9d8c7b-6a5f-4e3d-8c2b-1a0f9e8d7c6b\n__79_Pv6-fj39vX08_Lx8O_u7ezr6uno5-bl5OPi4eA\nacct-42\naaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee\nP53o-GF4yh-3iSdScBOi_nJOU4qOWyA5GZWh5bzyP3I",
+  "enroll_signature": "MEUCIDGWUtFhrzY3govjUFHlWz8HT7J2WijH2yI_zFcs4i_oAiEA5aa14dV2bFcmdnGt1z4t2FUthYpmfZ_g-s4GI8tfiY8"
+}

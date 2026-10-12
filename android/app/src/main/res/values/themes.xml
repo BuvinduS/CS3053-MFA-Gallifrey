@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Light window theme; values-night/themes.xml supplies the dark one. Compose draws the UI. -->
+    <style name="Theme.Gallifrey" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

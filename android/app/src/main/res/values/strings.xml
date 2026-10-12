@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- All user-visible text. Translations (e.g. values-si, values-ta) override these
+     keys; do not claim Sinhala or Tamil usability until translated and tested (D06). -->
+<resources>
+    <string name="app_name">Gallifrey Authenticator</string>
+
+    <!-- Tabs -->
+    <string name="tab_practice">Practice</string>
+    <string name="tab_calibration">Calibration</string>
+
+    <!-- Input -->
+    <string name="input_method">Input method</string>
+    <string name="input_mode_buttons">Dot and Dash buttons</string>
+    <string name="input_mode_gesture">Hold area</string>
+    <string name="dot">Dot</string>
+    <string name="dash">Dash</string>
+    <string name="hold_area_description">Hold area. Tap for dot, hold for dash.</string>
+    <string name="hold_area_label">Tap for Dot · Hold for Dash</string>
+    <string name="hold_area_holding">Holding…</string>
+    <string name="action_add_dot">Add dot</string>
+    <string name="action_add_dash">Add dash</string>
+    <string name="entry_progress">%1$d of %2$d entered</string>
+
+    <!-- Practice screen -->
+    <string name="practice_title">Practice approval</string>
+    <string name="practice_status_start">Press Play pattern to feel the pattern.</string>
+    <string name="practice_status_playing">Playing. Feel the pattern, then enter it.</string>
+    <string name="practice_status_entered">%1$d of %2$d entered.</string>
+    <string name="practice_status_full">Already %1$d entered. Submit or undo.</string>
+    <string name="practice_status_removed">Removed one. %1$d of %2$d entered.</string>
+    <string name="practice_status_cleared">Entry cleared. 0 of %1$d entered.</string>
+    <string name="practice_status_matched">Pattern matched.</string>
+    <plurals name="practice_status_mismatch">
+        <item quantity="one">Pattern did not match. %d attempt left.</item>
+        <item quantity="other">Pattern did not match. %d attempts left.</item>
+    </plurals>
+    <string name="practice_status_locked">Pattern did not match. No attempts left. This request is locked.</string>
+    <string name="practice_status_incomplete">Enter %1$d elements. %2$d entered so far.</string>
+    <string name="practice_status_not_accepting">This request is no longer accepting input.</string>
+    <string name="practice_status_direct">Direct approval chosen. Approve or deny the request.</string>
+    <string name="practice_status_approved">Approved. Your phone signed the practice request.</string>
+    <string name="practice_status_not_approved">Not approved. Nothing was signed.</string>
+    <string name="practice_status_denied">Denied. Nothing was approved.</string>
+    <string name="practice_status_expired">Request expired. Start a new practice.</string>
+    <string name="practice_status_restarted">New practice started. Press Play pattern.</string>
+    <string name="practice_status_expiry_warning">30 seconds left to finish this request.</string>
+    <string name="play_pattern">Play pattern</string>
+    <string name="replay_pattern">Replay pattern</string>
+    <string name="undo">Undo</string>
+    <string name="reset">Reset</string>
+    <string name="submit">Submit</string>
+    <string name="attempts_left">Attempts left: %1$d</string>
+    <string name="direct_approval">Skip the pattern and approve directly</string>
+    <string name="deny_request">Deny request</string>
+    <string name="approve_question">Approve this practice request?</string>
+    <string name="approve">Approve</string>
+    <string name="deny">Deny</string>
+    <string name="time_left">Time left: %1$d:%2$02d</string>
+    <string name="time_left_spoken">Time left: %1$s</string>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="seconds">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <string name="result_approved">Approved</string>
+    <string name="result_denied">Denied</string>
+    <string name="result_locked">Locked after 3 attempts</string>
+    <string name="result_expired">Expired</string>
+    <string name="result_stats">Submissions: %1$d. Mismatches: %2$d. Corrections: %3$d.</string>
+    <string name="result_entry_time">Entry time: %1$.1f seconds.</string>
+    <string name="start_new_practice">Start new practice</string>
+
+    <!-- Device verification prompt -->
+    <string name="verify_practice_title">Approve practice request</string>
+    <string name="verify_practice_subtitle">Verify it\'s you to sign the practice approval</string>
+
+    <!-- Calibration screen -->
+    <string name="calibration_title">Haptic calibration</string>
+    <string name="calibration_speed">Vibration speed</string>
+    <string name="calibration_speed_value">Dot %1$d milliseconds, Dash %2$d milliseconds</string>
+    <string name="feel_dot">Feel Dot</string>
+    <string name="feel_dash">Feel Dash</string>
+    <string name="calibration_gap">Gap between vibrations</string>
+    <string name="calibration_gap_value">Silence between vibrations: %1$d milliseconds</string>
+    <string name="calibration_start_delay">Start delay</string>
+    <string name="calibration_start_delay_value">Wait before the pattern starts: %1$d milliseconds</string>
+    <string name="play_sample">Play sample: Dot Dash Dot Dot</string>
+    <string name="calibration_hold">Hold length</string>
+    <string name="calibration_hold_value">Holds shorter than %1$d milliseconds count as Dot</string>
+    <string name="calibration_hold_prompt">Tap or hold the area below to test.</string>
+    <string name="calibration_hold_result">You held for %1$d milliseconds: %2$s.</string>
+    <string name="calibration_default_mode">Default input method</string>
+    <string name="calibration_reset">Reset to defaults</string>
+    <string name="calibration_reset_done">Settings reset to defaults.</string>
+</resources>
