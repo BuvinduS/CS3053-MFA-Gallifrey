@@ -98,7 +98,9 @@ def complete(
         result_handle = auth_client.get_result(pending.auth_tx_id)
         if result_handle is None:
             raise ResultRedemptionError("No result available")
-        result = auth_client.redeem(result_handle)  # one-time
+        result = auth_client.redeem(
+            result_handle, pending.login_binding
+        )  # one-time
     except ResultRedemptionError:
         return _fail(db, pending)
     except AuthServiceUnavailable:

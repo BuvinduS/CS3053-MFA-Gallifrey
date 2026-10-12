@@ -14,3 +14,6 @@ COOKIE_SECURE = os.getenv("COOKIE_SECURE", "true").lower() == "true"
 
 # Enables the mock auth service's approve/deny page. Never enable outside demos.
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
+
+AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://127.0.0.1:8001")
+RP_CLIENT_SECRET = os.getenv("RP_CLIENT_SECRET", "dev-rp-secret-change-me")

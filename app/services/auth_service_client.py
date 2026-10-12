@@ -2,10 +2,10 @@
 
 This file is the API CONTRACT with the authentication-service team:
 
-    create_request(account_id, login_binding) -> tx_id
+    create_request(account_id, login_binding, idempotency_key) -> tx_id
     get_status(tx_id)                         -> AuthStatus
     get_result(tx_id)                         -> result handle | None  (APPROVED only)
-    redeem(result_handle)                     -> RedeemedResult         (ONE-TIME)
+    redeem(result_handle, login_binding)      -> RedeemedResult         (ONE-TIME)
 
 The website never trusts "APPROVED" on its own: after redeem() it checks that the
 returned account, tx_id and login_binding match its own PendingLogin.
@@ -17,6 +17,7 @@ from enum import Enum
 
 class AuthStatus(str, Enum):
     PENDING = "PENDING"
+    CANCELLED = "CANCELLED"
     APPROVED = "APPROVED"
     DENIED = "DENIED"
     EXPIRED = "EXPIRED"
@@ -29,6 +30,12 @@ class AuthServiceError(Exception):
 
 class AuthServiceUnavailable(AuthServiceError):
     """Service unreachable or returned an unusable response."""
+
+
+class AuthServiceRateLimited(AuthServiceError):
+    def __init__(self, retry_after_seconds: int):
+        self.retry_after_seconds = retry_after_seconds
+        super().__init__("Authentication request rate limited")
 
 
 class ResultRedemptionError(AuthServiceError):
@@ -44,7 +51,12 @@ class RedeemedResult:
 
 class AuthServiceClient(ABC):
     @abstractmethod
-    def create_request(self, account_id: str, login_binding: str) -> str: ...
+    def create_request(
+        self,
+        account_id: str,
+        login_binding: str,
+        idempotency_key: str | None = None,
+    ) -> str: ...
 
     @abstractmethod
     def get_status(self, tx_id: str) -> AuthStatus: ...
@@ -53,4 +65,4 @@ class AuthServiceClient(ABC):
     def get_result(self, tx_id: str) -> str | None: ...
 
     @abstractmethod
-    def redeem(self, result_handle: str) -> RedeemedResult: ...
+    def redeem(self, result_handle: str, login_binding: str) -> RedeemedResult: ...

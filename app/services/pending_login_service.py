@@ -23,8 +23,12 @@ def create_pending_login(db: Session, user: User, auth_client: AuthServiceClient
     """
     login_binding = secrets.token_urlsafe(32)  # fresh for every login attempt
     # The binding goes to the auth service; the browser never sees it.
+    idempotency_key = secrets.token_urlsafe(24)
     tx_id = auth_client.create_request(
-        account_id=str(user.id), login_binding=login_binding)
+        account_id=str(user.id),
+        login_binding=login_binding,
+        idempotency_key=idempotency_key,
+    )
 
     token = secrets.token_urlsafe(32)
     now = utcnow()

@@ -97,7 +97,8 @@ is a threat-model limit stated in the design.
 
 ## Build, test and run
 
-Requirements: JDK 17+ and, for the app, Android SDK Platform 35 (Android Studio
+Requirements: JDK 17 (the pinned Kotlin plugin does not support the installed
+JDK 25 runtime) and, for the app, Android SDK Platform 35 (Android Studio
 installs it). Open the `android/` folder in Android Studio.
 
 ```bash
